@@ -7,9 +7,10 @@ Le professeur est seul à saisir les opérations, sur l'ordinateur relié au vid
 ## Lancer l'interface
 
 - **Sans internet** : télécharger le dépôt et ouvrir `index.html` dans Chrome, Edge ou Firefox. (Sans connexion, les polices sont remplacées par celles du système.)
-- **En ligne** : activer GitHub Pages sur la branche principale (Settings → Pages → *Deploy from a branch* → `main` / `root`). L'adresse sera `https://<compte>.github.io/paper-bridge-website/`.
+- **En ligne avec Vercel** : sur vercel.com, *Add New… → Project*, importer ce dépôt GitHub, laisser *Framework Preset* sur **Other**, sans commande de build ni dossier de sortie, puis *Deploy*. C'est un site statique : aucune configuration n'est nécessaire. Chaque push sur `main` redéploie le site.
+- **En ligne avec GitHub Pages** : Settings → Pages → *Deploy from a branch* → `main` / `root`. L'adresse sera `https://<compte>.github.io/paper-bridge-website/`.
 
-Les données restent dans le navigateur de l'ordinateur utilisé. Elles survivent à un rechargement de la page ou à un redémarrage, mais pas à un changement d'ordinateur ou de navigateur.
+Les données restent dans le navigateur de l'ordinateur utilisé. Elles survivent à un rechargement de la page ou à un redémarrage, mais pas à un changement d'ordinateur ou de navigateur. Même en ligne, chaque PC de salle a donc sa propre séance : il faut mener toute la séance sur le même PC.
 
 ## Pendant la séance
 
