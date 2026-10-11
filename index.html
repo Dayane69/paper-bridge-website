@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pont de papier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 24" aria-hidden="true">
+        <path d="M2 20 H46" />
+        <path d="M6 20 Q24 2 42 20" />
+        <path d="M14 20 V12 M24 20 V9 M34 20 V12" />
+      </svg>
+      <span>Pont de papier</span>
+    </div>
+
+    <div class="facts" id="facts"></div>
+
+    <nav class="tabs" aria-label="Vues">
+      <button type="button" class="tab" data-view="market">Marché</button>
+      <button type="button" class="tab" data-view="results">Résultats</button>
+      <button type="button" class="tab" data-view="settings">Réglages</button>
+    </nav>
+
+  </header>
+
+  <main class="views">
+
+    <section class="view view-market" id="view-market">
+      <div class="board">
+        <h2 class="section-title">Cours du marché <small>prix de la prochaine unité</small></h2>
+        <div class="board-list" id="board-list"></div>
+        <p class="board-note" id="board-note"></p>
+      </div>
+      <div class="groups">
+        <h2 class="section-title">Groupes <small>cliquer sur un groupe pour acheter ou revendre</small></h2>
+        <div class="group-grid" id="group-grid"></div>
+      </div>
+    </section>
+
+    <section class="view view-results" id="view-results" hidden>
+      <div class="panel">
+        <h2 class="section-title">Pesée</h2>
+        <p class="hint">Saisir le poids maximal tenu par chaque pont, en grammes. Mettre 0 si le pont ne tient pas.</p>
+        <div class="table-wrap"><table class="data" id="weigh-table"></table></div>
+      </div>
+      <div class="panel">
+        <h2 class="section-title">Classement <small>score = grammes tenus ÷ euros dépensés</small></h2>
+        <ol class="ranking" id="ranking"></ol>
+      </div>
+    </section>
+
+    <section class="view view-settings" id="view-settings" hidden></section>
+
+  </main>
+
+  <footer class="ticker">
+    <div class="ticker-feed" id="ticker" aria-live="polite"></div>
+    <div class="tools">
+      <button type="button" class="tool" data-action="undo" title="Annuler la dernière opération (Ctrl+Z)">↶ Annuler</button>
+      <button type="button" class="tool" data-action="zoom-out" title="Texte plus petit">A−</button>
+      <button type="button" class="tool" data-action="zoom-in" title="Texte plus grand">A+</button>
+      <button type="button" class="tool" data-action="theme" id="theme-btn" title="Changer le thème">Auto</button>
+      <button type="button" class="tool" data-action="fullscreen" title="Plein écran">⛶</button>
+    </div>
+  </footer>
+</div>
+
+<dialog class="till" id="till" aria-labelledby="till-title"></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
