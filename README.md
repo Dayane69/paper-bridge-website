@@ -51,7 +51,7 @@ Budget : 5 € par groupe, 6 groupes, 1 € par bonne réponse.
 
 ## Équilibrer le jeu
 
-Voir **[EQUILIBRAGE.md](EQUILIBRAGE.md)** : niveaux de difficulté, stocks selon le nombre de groupes, coût du matériel pour le premier et le dernier groupe, effet de chaque réglage et nombre de questions à prévoir. Les mêmes niveaux s'appliquent en un clic dans **Réglages → Équilibrage**.
+Voir **[EQUILIBRAGE.md](EQUILIBRAGE.md)** : niveaux de difficulté, stocks selon le nombre de groupes, coût du matériel pour le premier et le dernier groupe, effet de chaque réglage, nombre de questions à prévoir, distances et poids conseillés, et protocole de pesée. Les mêmes niveaux s'appliquent en un clic dans **Réglages → Équilibrage**.
 
 Si la séance a déjà été ouverte sur un PC avant cette mise à jour, ses anciens articles restent en place : choisir un niveau dans Réglages → Équilibrage puis *Appliquer* (après une « Nouvelle séance » si des achats ont déjà eu lieu).
 

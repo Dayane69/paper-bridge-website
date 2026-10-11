@@ -1,6 +1,6 @@
 # Fiches d'équilibrage
 
-Ces fiches aident à régler le marché selon le nombre de groupes et la difficulté voulue. Les quatre niveaux sont aussi disponibles directement dans l'interface (**Réglages → Équilibrage**) : on choisit un niveau, on vérifie les chiffres, puis on clique sur *Appliquer*. Les stocks sont alors calculés pour le nombre de groupes du moment.
+Ces fiches aident à régler le marché selon le nombre de groupes et la difficulté voulue, à choisir la distance et le poids à tenir, et à organiser la pesée. Les quatre niveaux sont aussi disponibles directement dans l'interface (**Réglages → Équilibrage**) : on choisit un niveau, on vérifie les chiffres, puis on clique sur *Appliquer*. Les stocks sont alors calculés pour le nombre de groupes du moment.
 
 Tous les chiffres viennent des formules de l'application, pour un budget de **5 € par groupe** et une revente à **50 %**.
 
@@ -113,9 +113,94 @@ Conseils :
 - Une question pour toute la classe (le premier groupe qui répond gagne) crée plus d'enjeu qu'une question par groupe.
 - Pour une pénalité (matériel gaspillé, bruit…), utiliser *Ajustement → Retirer* dans la caisse du groupe.
 
-## Fiche 7 : déroulé conseillé
+## Fiche 7 : distance et poids à tenir
 
-1. **Avant la séance** : régler le nombre de groupes, choisir un niveau dans Réglages → Équilibrage, puis *Appliquer*. Laisser la distance et le poids vides (affichés « ? »).
+### Pourquoi la longueur d'une feuille compte
+
+Une feuille A4 mesure **29,7 cm** de long. C'est le repère qui fixe la difficulté :
+
+- **en dessous de 25 cm**, une seule feuille pliée suffit à franchir l'écart ;
+- **au-delà de 27 cm**, il faut assembler des feuilles bout à bout. Le scotch devient indispensable et chaque raccord est un point faible. C'est là que le marché du scotch prend tout son sens.
+
+### Distances conseillées
+
+| Distance | Difficulté | Ce que ça demande |
+| --- | --- | --- |
+| 20 cm | Facile | Une feuille pliée en accordéon ou en U traverse sans raccord. |
+| 25 cm | Moyenne | Une seule feuille passe encore, mais il ne reste que 2 cm d'appui de chaque côté : le pont glisse facilement. |
+| **30 cm (conseillé)** | Difficile | Raccord obligatoire. Il faut penser la structure et dépenser du scotch au bon endroit. |
+| 35 cm | Très difficile | Deux raccords ou des tubes renforcés ; 6 feuilles deviennent justes. |
+| 40 cm et plus | Expert | Il faut une vraie structure (treillis, tubes). Prévoir plus de papier : niveau Normal ou Facile. |
+
+### Poids conseillés
+
+Ordres de grandeur pour un pont fait avec le kit de référence (6 feuilles A4 de 80 g/m², environ 40 cm de scotch au total), charge posée au milieu :
+
+| Distance | Pont fragile | Pont correct | Très bon pont | Objectif à fixer |
+| --- | --- | --- | --- | --- |
+| 20 cm | moins de 300 g | 500 g à 1 kg | 2 kg et plus | **500 g** |
+| 25 cm | moins de 200 g | 300 à 700 g | 1,5 kg et plus | **300 g** |
+| **30 cm** | moins de 100 g | 200 à 500 g | 1 kg et plus | **250 g** |
+| 35 cm | moins de 100 g | 150 à 400 g | 800 g et plus | **200 g** |
+| 40 cm | presque rien | 100 à 300 g | 600 g et plus | **150 g** |
+
+Ces chiffres sont des estimations : ils varient beaucoup selon le papier, le soin du montage et la forme de la charge. **Le plus fiable est de fabriquer soi-même un pont test avec le kit** (10 minutes suffisent) et de régler l'objectif dessus. Un bon objectif est un poids que **la moitié des groupes environ** peut atteindre : assez pour que « objectif atteint » ait de la valeur, pas trop pour ne pas décourager.
+
+Le poids à tenir n'entre pas dans le score (grammes ÷ euros), il sert de seuil : le classement affiche « objectif atteint » ou « sous l'objectif » pour chaque groupe.
+
+### Combiner marché et distance
+
+Ne pas cumuler toutes les difficultés, sinon plus aucun pont ne tient :
+
+| Marché | Distance conseillée | Objectif conseillé |
+| --- | --- | --- |
+| Facile | 35 à 40 cm | 200 g |
+| Normal | 30 à 35 cm | 250 g |
+| **Difficile** | **30 cm** | **250 g** |
+| Très difficile | 25 cm | 300 g |
+
+### Garder la distance et le poids secrets
+
+Puisque les groupes ne connaissent pas les valeurs, ils doivent construire un pont polyvalent. Quelques façons de jouer avec ça :
+
+- **Annoncer une fourchette** (« entre 25 et 35 cm ») au début, puis révéler la valeur exacte à mi-séance : ceux qui ont tout misé sur une seule longueur doivent racheter du matériel au prix fort.
+- **Révéler la distance au début et le poids seulement à la pesée** : les groupes visent le meilleur rapport poids/prix sans savoir où est la barre.
+- **Tout garder secret jusqu'à la pesée** : le plus difficile, mais il vaut mieux alors annoncer une fourchette de distance.
+
+## Fiche 8 : protocole de pesée
+
+Pour comparer les groupes équitablement, la pesée doit être la même pour tous.
+
+**Matériel**
+- Deux appuis de même hauteur : deux tables rapprochées, ou deux piles de livres identiques.
+- Une règle pour mesurer l'écart **entre les bords intérieurs** des appuis.
+- Un récipient léger posé au centre du pont : gobelet en plastique ou petite boîte.
+- De quoi le remplir petit à petit : sable, riz, billes, pièces ou masses marquées.
+- Une balance de cuisine pour peser le contenu à la fin.
+
+**Règles**
+1. Le pont est simplement posé sur les appuis : interdit de le scotcher ou de le coincer.
+2. Le pont doit être plus long que l'écart : c'est à chaque groupe de prévoir de quoi reposer sur les appuis.
+3. La charge est posée au centre, toujours avec le même récipient.
+4. On ajoute la charge par étapes (par exemple 50 g à la fois). Une étape compte si le pont tient **5 secondes** sans toucher la table.
+5. Le résultat est la **dernière charge tenue**, récipient compris. Mettre 0 si le pont ne tient pas le récipient vide.
+6. Saisir le résultat dans l'onglet Résultats.
+
+**Repères de poids si on n'a pas de masses marquées**
+
+| Objet | Poids |
+| --- | --- |
+| Pièce de 10 centimes | 4,1 g |
+| Pièce de 1 € | 7,5 g |
+| Pièce de 2 € | 8,5 g |
+| Feuille A4 (80 g/m²) | 5 g |
+| Paquet de 500 g (sucre, pâtes) | 500 g |
+| Bouteille d'eau de 50 cl pleine | environ 520 g |
+| Bouteille d'eau de 1 L pleine | environ 1 kg |
+
+## Fiche 9 : déroulé conseillé
+
+1. **Avant la séance** : régler le nombre de groupes, choisir un niveau dans Réglages → Équilibrage, puis *Appliquer*. Choisir la distance et le poids (fiche 7), si possible en testant un pont soi-même, mais laisser les champs vides dans l'interface (affichés « ? »). Préparer le poste de pesée (fiche 8).
 2. **Ouverture du marché** : projeter l'écran Marché et expliquer que les prix montent quand le stock baisse. Laisser quelques minutes de réflexion avant les premiers achats : les groupes qui planifient achètent moins cher.
 3. **Pendant la construction** : questions pour gagner de l'argent, reventes possibles.
 4. **Révélation** : saisir la distance et le poids à tenir dans Réglages.
