@@ -13,18 +13,79 @@
   var seq = Date.now();
   function uid() { return (seq++).toString(36); }
 
+  /* ---------- Niveaux d'équilibrage ----------
+     Calibrés pour un budget de 5 € par groupe et un « kit de référence »
+     (6 feuilles, 4 scotchs de 5 cm, 2 scotchs de 10 cm, 3 coups de ciseaux).
+     Le stock est donné PAR GROUPE : multiplié par le nombre de groupes, il donne
+     la même difficulté quel que soit l'effectif. Les prix sont donnés en centimes
+     pour 5 € de budget et suivent le budget s'il est modifié.
+     Format : [stock par groupe, prix de départ, hausse max en %]. */
+  var KIT = [6, 4, 2, 3];
+  var LEVELS = {
+    facile: {
+      label: 'Facile', gains: 0,
+      text: 'Tout le monde peut s’offrir le kit. Pour découvrir le marché.',
+      paper: [10, 30, 60], t5: [6, 10, 50], t10: [3, 20, 50], cut: 20
+    },
+    normal: {
+      label: 'Normal', gains: 0.5,
+      text: 'Le kit reste abordable, mais les derniers acheteurs paient le prix fort.',
+      paper: [8, 30, 100], t5: [5, 10, 60], t10: [3, 20, 60], cut: 30
+    },
+    difficile: {
+      label: 'Difficile', gains: 1,
+      text: 'Seuls les premiers acheteurs ont le kit complet. Les autres doivent économiser, revendre ou gagner de l’argent.',
+      paper: [6, 35, 150], t5: [4, 10, 100], t10: [2, 20, 100], cut: 35
+    },
+    extreme: {
+      label: 'Très difficile', gains: 2,
+      text: 'Pénurie : il n’y a pas assez de papier pour que chaque groupe ait le kit. Les questions deviennent indispensables.',
+      paper: [5, 40, 200], t5: [3, 12, 150], t10: [2, 25, 150], cut: 40
+    }
+  };
+
+  function levelItems(key, nGroups, budget) {
+    var L = LEVELS[key], k = budget / 500, n = Math.max(nGroups, 1);
+    function money(c) { return Math.max(1, Math.round(c * k)); }
+    return [
+      { id: uid(), name: 'Feuille A4', unit: 'feuille', base: money(L.paper[1]), stock: L.paper[0] * n, rise: L.paper[2], resell: true },
+      { id: uid(), name: 'Scotch 5 cm', unit: 'bout', base: money(L.t5[1]), stock: L.t5[0] * n, rise: L.t5[2], resell: true },
+      { id: uid(), name: 'Scotch 10 cm', unit: 'bout', base: money(L.t10[1]), stock: L.t10[0] * n, rise: L.t10[2], resell: true },
+      { id: uid(), name: 'Coup de ciseaux', unit: 'coup', base: money(L.cut), stock: null, rise: 0, resell: false }
+    ];
+  }
+
+  // Simule des groupes qui achètent le kit de référence l'un après l'autre.
+  // Renvoie le coût du kit pour le premier et le dernier groupe (null si le stock
+  // ne suffit plus) et le nombre de groupes qui peuvent se l'offrir sans aide.
+  function simulateKit(items, nGroups, budget) {
+    var stock = items.map(function (it) { return unlimited(it) ? Infinity : it.stock; });
+    var costs = [];
+    for (var g = 0; g < nGroups; g++) {
+      var c = 0, ok = true;
+      for (var i = 0; i < KIT.length && ok; i++) {
+        for (var q = 0; q < KIT[i]; q++) {
+          if (stock[i] <= 0) { ok = false; break; }
+          c += priceAt(items[i], stock[i]);
+          stock[i]--;
+        }
+      }
+      costs.push(ok ? c : null);
+    }
+    return {
+      first: costs[0],
+      last: costs[costs.length - 1],
+      afford: costs.filter(function (c) { return c != null && c <= budget; }).length
+    };
+  }
+
   function defaults() {
     var groups = [];
     for (var i = 0; i < 6; i++) groups.push({ id: uid(), name: 'Groupe ' + (i + 1), color: COLORS[i] });
     return {
-      settings: { budget: 500, sellRatio: 50, span: '', target: '' },
+      settings: { budget: 500, sellRatio: 50, span: '', target: '', reward: 100, level: 'difficile' },
       groups: groups,
-      items: [
-        { id: uid(), name: 'Feuille A4', unit: 'feuille', base: 50, stock: 50, rise: 150, resell: true },
-        { id: uid(), name: 'Scotch 5 cm', unit: 'bout', base: 15, stock: 60, rise: 100, resell: true },
-        { id: uid(), name: 'Scotch 10 cm', unit: 'bout', base: 30, stock: 40, rise: 100, resell: true },
-        { id: uid(), name: 'Coup de ciseaux', unit: 'coup', base: 40, stock: null, rise: 0, resell: false }
-      ],
+      items: levelItems('difficile', 6, 500),
       tx: [],
       weights: {},
       ui: { view: 'market', theme: 'auto', scale: 1 }
@@ -156,7 +217,25 @@
 
   function hasTx(pred) { return state.tx.some(pred); }
 
-  function costOf(gid) { return state.settings.budget - balanceOf(gid); }
+  // Argent dépensé en matériel : achats moins reventes (les gains et pénalités ne comptent pas).
+  function costOf(gid) {
+    var c = 0;
+    state.tx.forEach(function (t) {
+      if (t.g !== gid) return;
+      if (t.type === 'buy') c += t.cents;
+      else if (t.type === 'sell') c -= t.cents;
+    });
+    return c;
+  }
+
+  // Argent gagné : bonnes réponses et bonus donnés depuis la caisse.
+  function earnedOf(gid) {
+    var e = 0;
+    state.tx.forEach(function (t) {
+      if (t.g === gid && (t.type === 'gain' || (t.type === 'adj' && t.cents > 0))) e += t.cents;
+    });
+    return e;
+  }
 
   function weightOf(gid) {
     var w = state.weights[gid];
@@ -179,6 +258,7 @@
     var iname = it ? it.name : 'article supprimé';
     if (t.type === 'buy') return gname + ' achète ' + t.qty + ' × ' + iname + ' (' + eur(-t.cents) + ')';
     if (t.type === 'sell') return gname + ' revend ' + t.qty + ' × ' + iname + ' (+' + eur(t.cents) + ')';
+    if (t.type === 'gain') return gname + ' gagne +' + eur(t.cents) + (t.note ? ' · ' + t.note : '');
     return gname + ' : ' + (t.cents >= 0 ? 'bonus +' + eur(t.cents) : 'pénalité ' + eur(t.cents)) +
       (t.note ? ' · ' + t.note : '');
   }
@@ -216,6 +296,11 @@
     var owned = ownedOf(gid, iid);
     if (owned < qty) return fail('Le groupe ne possède que ' + owned + ' ' + plural(owned, item.unit) + '.');
     commit({ type: 'sell', g: gid, item: iid, qty: qty, cents: sellQuote(item, qty) });
+  }
+
+  function reward(gid) {
+    if (!groupById(gid)) return;
+    commit({ type: 'gain', g: gid, cents: state.settings.reward, note: 'Bonne réponse' });
   }
 
   function undo() {
@@ -310,10 +395,12 @@
       var bal = balanceOf(g.id);
       if (prev.bal[g.id] != null && prev.bal[g.id] !== bal) flashes.push('g-' + g.id);
       prev.bal[g.id] = bal;
-      var chips = state.items.map(function (it) {
-        var n = ownedOf(g.id, it.id);
-        return n > 0 ? '<span class="chip"><b>' + n + '</b> × ' + esc(it.name) + '</span>' : '';
-      }).join('');
+      var earned = earnedOf(g.id);
+      var chips = (earned > 0 ? '<span class="chip chip-gain">+' + eur(earned) + ' gagnés</span>' : '') +
+        state.items.map(function (it) {
+          var n = ownedOf(g.id, it.id);
+          return n > 0 ? '<span class="chip"><b>' + n + '</b> × ' + esc(it.name) + '</span>' : '';
+        }).join('');
       return '<button type="button" class="gcard" id="g-' + g.id + '" data-action="open-till" data-g="' + g.id + '" style="--gc:' + esc(g.color) + '">' +
         '<span class="gcard-head"><span class="gbadge">' + (i + 1) + '</span><span class="gname">' + esc(g.name) + '</span></span>' +
         '<span class="gbal' + (bal < 0 ? ' neg' : '') + '">' + eur(bal).replace(' €', '') + '<small>€</small></span>' +
@@ -405,6 +492,7 @@
       '<div class="till-head">' +
         '<span class="gbadge">' + (groupIndex(g.id) + 1) + '</span>' +
         '<h2 class="till-title" id="till-title">' + esc(g.name) + '</h2>' +
+        '<button type="button" class="btn btn-gain" data-action="reward" data-g="' + g.id + '">Bonne réponse <span class="num">+' + eur(state.settings.reward) + '</span></button>' +
         '<div class="till-bal"><span>Solde</span><b class="' + (bal < 0 ? 'neg' : '') + '">' + eur(bal) + '</b></div>' +
         '<button type="button" class="close" data-action="close-till">Fermer ✕</button>' +
       '</div>' +
@@ -428,11 +516,35 @@
     if (focusId) { var f = document.getElementById(focusId); if (f) f.focus(); }
   }
 
+  /* ---------- Fenêtre « Bonne réponse » ---------- */
+  function openReward() {
+    var d = $('#reward-dlg');
+    d.innerHTML = '<div class="till-inner">' +
+      '<div class="till-head">' +
+        '<h2 class="till-title" id="reward-title">Bonne réponse</h2>' +
+        '<span class="reward-ask">Quel groupe gagne <b class="num">+' + eur(state.settings.reward) + '</b> ?</span>' +
+        '<button type="button" class="close" data-action="close-reward">Fermer ✕</button>' +
+      '</div>' +
+      '<div class="reward-grid">' + state.groups.map(function (g, i) {
+        return '<button type="button" class="reward-btn" data-action="reward" data-g="' + g.id + '" style="--gc:' + esc(g.color) + '">' +
+          '<span class="gbadge">' + (i + 1) + '</span><span class="reward-name">' + esc(g.name) + '</span>' +
+          '<span class="reward-bal num">' + eur(balanceOf(g.id)) + '</span></button>';
+      }).join('') + '</div>' +
+      '<p class="hint">Le montant se règle dans Réglages. Une erreur ? Fermer puis « ↶ Annuler ».</p>' +
+    '</div>';
+    if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
+  }
+
+  function closeReward() {
+    var d = $('#reward-dlg');
+    if (d.open) { if (d.close) d.close(); else d.removeAttribute('open'); }
+  }
+
   /* ---------- Rendu : résultats ---------- */
   function renderResults() {
     var target = parseFloat(String(state.settings.target).replace(',', '.'));
     $('#weigh-table').innerHTML =
-      '<thead><tr><th>Groupe</th><th class="r">Dépensé</th><th class="r">Poids tenu</th></tr></thead><tbody>' +
+      '<thead><tr><th>Groupe</th><th class="r">Dépensé en matériel</th><th class="r">Poids tenu</th></tr></thead><tbody>' +
       state.groups.map(function (g, i) {
         var w = state.weights[g.id];
         return '<tr><td><span class="rank-name" style="--gc:' + esc(g.color) + '"><span class="gbadge">' + (i + 1) + '</span>' + esc(g.name) + '</span></td>' +
@@ -522,6 +634,7 @@
           formRow('set-target', 'Poids à tenir (g)', esc(s.target), 'Laisser vide pour afficher « ? »', 'target', 'decimal') +
           formRow('set-budget', 'Budget par groupe (€)', centsToInput(s.budget), 'Les soldes se mettent à jour aussitôt', 'budget', 'decimal') +
           formRow('set-ratio', 'Prix de revente (% du prix du marché)', s.sellRatio, '50 = moitié prix', 'sellRatio', 'numeric') +
+          formRow('set-reward', 'Gain par bonne réponse (€)', centsToInput(s.reward), 'Bouton « + Bonne réponse » en bas de l’écran', 'reward', 'decimal') +
         '</div>' +
       '</div>' +
 
@@ -532,10 +645,12 @@
         '<div class="panel-actions"><button type="button" class="btn btn-buy" data-action="add-group">+ Ajouter un groupe</button></div>' +
       '</div>' +
 
+      renderBalancePanel(started) +
+
       '<div class="panel full">' +
         '<h2 class="section-title">Articles du marché</h2>' +
         '<p class="hint">Le prix monte à chaque achat. Quand le stock est plein, l’article coûte son prix de départ ; quand il est vide, il coûte prix de départ × (1 + hausse). ' +
-          'Exemple : 50 feuilles à 0,50 € avec une hausse de 150 % → 0,50 € au début, 1,10 € quand il en reste 10, 1,23 € pour la dernière. Stock vide = quantité illimitée et prix fixe.</p>' +
+          'Exemple : 36 feuilles à 0,35 € avec une hausse de 150 % → 0,35 € au début, 0,73 € quand il en reste 10, 0,86 € pour la dernière. Stock vide = quantité illimitée et prix fixe.</p>' +
         '<div class="table-wrap"><table class="data"><thead><tr><th>Article</th><th>Unité</th><th>Prix de départ (€)</th><th>Stock initial</th><th>Hausse max (%)</th><th>Revendable</th><th class="r">Prix max</th><th></th></tr></thead><tbody>' +
           itemRows + '</tbody></table></div>' +
         '<div class="panel-actions"><button type="button" class="btn btn-buy" data-action="add-item">+ Ajouter un article</button></div>' +
@@ -555,6 +670,47 @@
           '<button type="button" class="btn btn-danger" data-action="factory-reset" data-confirm="1">Tout réinitialiser</button>' +
         '</div>' +
       '</div>';
+  }
+
+  function renderBalancePanel(started) {
+    var s = state.settings, n = state.groups.length;
+    var selected = LEVELS[s.level] ? s.level : 'difficile';
+    var cards = Object.keys(LEVELS).map(function (key) {
+      var L = LEVELS[key];
+      var sim = simulateKit(levelItems(key, n, s.budget), n, s.budget);
+      var questions = Math.round(L.gains * n);
+      return '<button type="button" class="level' + (key === selected ? ' selected' : '') + '" data-action="pick-level" data-level="' + key + '" aria-pressed="' + (key === selected) + '">' +
+        '<span class="level-name">' + L.label + '</span>' +
+        '<span class="level-text">' + L.text + '</span>' +
+        '<span class="level-stats">' +
+          '<span>Kit du 1<sup>er</sup> groupe <b class="num">' + eur(sim.first) + '</b></span>' +
+          '<span>Kit du dernier <b class="num">' + (sim.last == null ? 'introuvable' : eur(sim.last)) + '</b></span>' +
+          '<span><b class="num">' + sim.afford + '</b> groupe' + (sim.afford > 1 ? 's' : '') + ' sur ' + n + (sim.afford > 1 ? ' peuvent' : ' peut') + ' payer le kit</span>' +
+          '<span>Questions à prévoir <b class="num">' + (questions ? '≈ ' + questions + ' × ' + eur(s.reward) : 'aucune') + '</b></span>' +
+        '</span></button>';
+    }).join('');
+
+    var preview = levelItems(selected, n, s.budget).map(function (it, i) {
+      return '<tr><td class="item-name">' + esc(it.name) + '</td>' +
+        '<td class="r num">' + (unlimited(it) ? 'illimité' : it.stock) + '</td>' +
+        '<td class="r num">' + eur(it.base) + '</td>' +
+        '<td class="r num">' + (unlimited(it) ? eur(it.base) : eur(Math.round(it.base * (1 + it.rise / 100)))) + '</td>' +
+        '<td class="r num">' + KIT[i] + '</td></tr>';
+    }).join('');
+
+    return '<div class="panel full">' +
+      '<h2 class="section-title">Équilibrage <small>pour ' + n + ' groupes et ' + eur(s.budget) + ' de budget</small></h2>' +
+      '<p class="hint">Kit de référence pour un pont correct : 6 feuilles, 4 scotchs de 5 cm, 2 scotchs de 10 cm et 3 coups de ciseaux. ' +
+        'Les chiffres supposent que les groupes achètent ce kit l’un après l’autre. Le stock s’adapte au nombre de groupes ; ajoutez ou retirez des groupes avant d’appliquer un niveau.</p>' +
+      '<div class="levels">' + cards + '</div>' +
+      '<div class="table-wrap"><table class="data"><thead><tr><th>Article</th><th class="r">Stock</th><th class="r">Prix de départ</th><th class="r">Prix max</th><th class="r">Dans le kit</th></tr></thead><tbody>' +
+        preview + '</tbody></table></div>' +
+      '<div class="panel-actions">' +
+        '<button type="button" class="btn btn-buy" data-action="apply-level" data-confirm="1"' + (started ? ' disabled' : '') + '>Appliquer le niveau ' + LEVELS[selected].label + '</button>' +
+        (started ? '<span class="hint">La séance a commencé : lancez une « Nouvelle séance » (en bas) pour changer de niveau.</span>'
+                 : '<span class="hint">Remplace les articles du marché par ceux du tableau.</span>') +
+      '</div>' +
+    '</div>';
   }
 
   function formRow(id, label, value, help, key, mode) {
@@ -639,6 +795,23 @@
       case 'fullscreen': toggleFullscreen(); break;
       case 'open-till': openTill(btn.dataset.g); break;
       case 'close-till': closeTill(); break;
+      case 'open-reward': openReward(); break;
+      case 'close-reward': closeReward(); break;
+      case 'reward': {
+        var fromDialog = $('#reward-dlg').open;
+        reward(btn.dataset.g);
+        if (fromDialog) closeReward();
+        break;
+      }
+      case 'pick-level': state.settings.level = btn.dataset.level; save(); renderAll(); break;
+      case 'apply-level': {
+        if (state.tx.length) break;
+        var lv = LEVELS[state.settings.level] ? state.settings.level : 'difficile';
+        state.items = levelItems(lv, state.groups.length, state.settings.budget);
+        prev = { price: {}, bal: {} };
+        save(); renderAll(); toast('Niveau ' + LEVELS[lv].label + ' appliqué pour ' + state.groups.length + ' groupes.');
+        break;
+      }
       case 'qty': {
         var id = btn.dataset.item;
         till.qty[id] = clamp((till.qty[id] || 1) + Number(btn.dataset.d), 1, 99);
@@ -700,6 +873,9 @@
       if (key === 'budget') {
         var c = parseEuros(el.value);
         if (c != null && c >= 0) state.settings.budget = c;
+      } else if (key === 'reward') {
+        var rw = parseEuros(el.value);
+        if (rw != null && rw > 0) state.settings.reward = rw;
       } else if (key === 'sellRatio') {
         var r = parseInt(el.value, 10);
         if (!isNaN(r)) state.settings.sellRatio = clamp(r, 0, 100);
@@ -753,6 +929,9 @@
   });
 
   $('#till').addEventListener('close', function () { till.gid = null; });
+  $('#reward-dlg').addEventListener('click', function (e) {
+    if (e.target === e.currentTarget) closeReward();
+  });
   $('#till').addEventListener('click', function (e) {
     if (e.target === e.currentTarget) closeTill(); // clic sur le fond
   });

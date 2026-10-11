@@ -17,11 +17,12 @@ Les données restent dans le navigateur de l'ordinateur utilisé. Elles surviven
 | Vue | À quoi elle sert |
 | --- | --- |
 | **Marché** | Écran à projeter : cours de chaque article, stock restant, solde de chaque groupe et ce qu'il possède. Cliquer sur un groupe ouvre sa caisse. |
-| **Caisse d'un groupe** | Choisir la quantité, puis *Acheter* ou *Revendre*. Le montant exact est affiché sur le bouton. *Ajustement* permet de donner ou retirer de l'argent (bonus, pénalité). |
-| **Résultats** | Saisir le poids tenu par chaque pont (en grammes). Le classement se calcule tout seul : **score = grammes tenus ÷ euros dépensés**. |
-| **Réglages** | Distance, poids à tenir, budget, taux de revente, groupes, articles et prix. Journal de toutes les opérations. Remise à zéro. |
+| **Caisse d'un groupe** | Choisir la quantité, puis *Acheter* ou *Revendre*. Le montant exact est affiché sur le bouton. *Bonne réponse* ajoute le gain réglé (1 € par défaut). *Ajustement* permet de donner ou retirer n'importe quel montant (bonus, pénalité). |
+| **+ Bonne réponse** | Bouton jaune en bas de l'écran : on clique sur le groupe qui a bien répondu, il gagne 1 € (réglable). |
+| **Résultats** | Saisir le poids tenu par chaque pont (en grammes). Le classement se calcule tout seul : **score = grammes tenus ÷ euros dépensés en matériel** (achats moins reventes ; l'argent gagné aux questions ne compte pas). |
+| **Réglages** | Distance, poids à tenir, budget, taux de revente, gain par bonne réponse, groupes, **niveaux d'équilibrage**, articles et prix. Journal de toutes les opérations. Remise à zéro. |
 
-Bandeau du bas : dernières opérations, bouton **↶ Annuler** (ou Ctrl+Z), taille du texte (**A− / A+**), thème clair/sombre et plein écran.
+Bandeau du bas : dernières opérations, bouton **+ Bonne réponse**, bouton **↶ Annuler** (ou Ctrl+Z), taille du texte (**A− / A+**), thème clair/sombre et plein écran.
 
 La distance et le poids à tenir s'affichent « ? » tant qu'ils ne sont pas saisis dans Réglages.
 
@@ -35,18 +36,24 @@ Chaque article a un prix de départ, un stock initial et une hausse maximale (en
 - Revendre rend l'unité au stock (ce qui fait redescendre le prix) et rapporte 50 % du prix actuel (réglable).
 - Un article sans stock initial est illimité, à prix fixe (par exemple le coup de ciseaux).
 
-Exemple avec les réglages d'origine : 50 feuilles A4 à 0,50 € avec une hausse de 150 % coûtent 0,50 € au début, 1,10 € quand il en reste 10 et 1,23 € pour la dernière.
+Exemple avec les réglages d'origine : 36 feuilles A4 à 0,35 € avec une hausse de 150 % coûtent 0,35 € au début, 0,73 € quand il en reste 10 et 0,86 € pour la dernière.
 
-Réglages d'origine :
+Réglages d'origine (niveau **Difficile** pour 6 groupes) :
 
 | Article | Prix de départ | Stock | Hausse max | Revendable |
 | --- | --- | --- | --- | --- |
-| Feuille A4 | 0,50 € | 50 | 150 % | oui |
-| Scotch 5 cm | 0,15 € | 60 | 100 % | oui |
-| Scotch 10 cm | 0,30 € | 40 | 100 % | oui |
-| Coup de ciseaux | 0,40 € | illimité | – | non |
+| Feuille A4 | 0,35 € | 36 | 150 % | oui |
+| Scotch 5 cm | 0,10 € | 24 | 100 % | oui |
+| Scotch 10 cm | 0,20 € | 12 | 100 % | oui |
+| Coup de ciseaux | 0,35 € | illimité | – | non |
 
-Budget : 5 € par groupe, 6 groupes.
+Budget : 5 € par groupe, 6 groupes, 1 € par bonne réponse.
+
+## Équilibrer le jeu
+
+Voir **[EQUILIBRAGE.md](EQUILIBRAGE.md)** : niveaux de difficulté, stocks selon le nombre de groupes, coût du matériel pour le premier et le dernier groupe, effet de chaque réglage et nombre de questions à prévoir. Les mêmes niveaux s'appliquent en un clic dans **Réglages → Équilibrage**.
+
+Si la séance a déjà été ouverte sur un PC avant cette mise à jour, ses anciens articles restent en place : choisir un niveau dans Réglages → Équilibrage puis *Appliquer* (après une « Nouvelle séance » si des achats ont déjà eu lieu).
 
 ## Fichiers
 

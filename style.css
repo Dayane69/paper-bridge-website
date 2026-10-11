@@ -19,6 +19,10 @@
   --gold: #c99a06;
   --silver: #8a96a8;
   --bronze: #b0652c;
+  --gain: #e5b100;
+  --gain-ink: #1d1600;
+  --gain-soft: #fff4c2;
+  --gain-text: #8a6500;
 
   --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
   --body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -47,6 +51,10 @@
     --gold: #f2c94c;
     --silver: #b8c2d1;
     --bronze: #e0955a;
+    --gain: #f2c94c;
+    --gain-ink: #1d1600;
+    --gain-soft: #3a3010;
+    --gain-text: #f2c94c;
     color-scheme: dark;
   }
 }
@@ -69,6 +77,10 @@
   --gold: #f2c94c;
   --silver: #b8c2d1;
   --bronze: #e0955a;
+  --gain: #f2c94c;
+  --gain-ink: #1d1600;
+  --gain-soft: #3a3010;
+  --gain-text: #f2c94c;
   color-scheme: dark;
 }
 
@@ -356,6 +368,37 @@ table.data .sub { display: block; font-size: 0.78rem; color: var(--muted); }
 .msg { margin: 0; font-weight: 700; min-height: 1.4em; }
 .msg.err { color: var(--danger); }
 .msg.ok { color: var(--down); }
+
+/* ---------- Gains ---------- */
+.btn-gain { background: var(--gain); color: var(--gain-ink); }
+.tool.tool-gain { background: var(--gain); color: var(--gain-ink); border-color: var(--gain); }
+.chip.chip-gain { background: var(--gain-soft); border-color: var(--gain); color: var(--ink); font-weight: 700; }
+.reward-dlg { width: min(52rem, calc(100vw - 2rem)); }
+.reward-ask { font-size: 1.1rem; }
+.reward-ask b { font-family: var(--display); font-size: 1.6rem; color: var(--gain-text); }
+.reward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 0.6rem; }
+.reward-btn {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "badge name" "badge bal";
+  align-items: center; gap: 0 0.6rem; text-align: left;
+  padding: 0.7rem 0.8rem; border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface);
+}
+.reward-btn:hover { border-color: var(--gc); background: var(--paper); }
+.reward-btn .gbadge { grid-area: badge; width: 2.4rem; height: 2.4rem; font-size: 1.4rem; }
+.reward-name { grid-area: name; font-weight: 700; font-size: 1.15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reward-bal { grid-area: bal; color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- Équilibrage ---------- */
+.levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.6rem; margin-bottom: 0.75rem; }
+.level {
+  display: grid; gap: 0.35rem; align-content: start; text-align: left;
+  padding: 0.7rem 0.8rem; border: 2px solid var(--line); border-radius: var(--radius); background: var(--paper);
+}
+.level:hover { border-color: var(--ink); }
+.level.selected { border-color: var(--accent); background: var(--accent-soft); }
+.level-name { font-family: var(--display); font-weight: 800; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1; }
+.level-text { font-size: 0.82rem; color: var(--muted); }
+.level-stats { display: grid; gap: 0.1rem; font-size: 0.82rem; }
+.level-stats b { font-family: var(--display); font-size: 1.05rem; }
 
 /* ---------- Résultats ---------- */
 .view-results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1rem; align-items: start; }

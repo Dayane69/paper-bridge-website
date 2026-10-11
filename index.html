@@ -65,6 +65,7 @@
   <footer class="ticker">
     <div class="ticker-feed" id="ticker" aria-live="polite"></div>
     <div class="tools">
+      <button type="button" class="tool tool-gain" data-action="open-reward" title="Donner de l’argent à un groupe qui a bien répondu">+ Bonne réponse</button>
       <button type="button" class="tool" data-action="undo" title="Annuler la dernière opération (Ctrl+Z)">↶ Annuler</button>
       <button type="button" class="tool" data-action="zoom-out" title="Texte plus petit">A−</button>
       <button type="button" class="tool" data-action="zoom-in" title="Texte plus grand">A+</button>
@@ -75,6 +76,7 @@
 </div>
 
 <dialog class="till" id="till" aria-labelledby="till-title"></dialog>
+<dialog class="till reward-dlg" id="reward-dlg" aria-labelledby="reward-title"></dialog>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="app.js"></script>
